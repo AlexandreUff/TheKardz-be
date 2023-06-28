@@ -30,3 +30,5 @@ class Hall {
         return hall
     }
 }
+
+module.exports = Hall
