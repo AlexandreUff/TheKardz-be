@@ -3,17 +3,17 @@ const conn = require('../db/conn')
 class User {
     static UserConnection = conn.db().collection("user")
 
-    static async create(name, hallNumber){
+    static async create(name, hall){
         let user
 
-        const isThereThisUser = await this.UserConnection.findSuchUserInHall(name, hallNumber)
+        const isThereThisUser = await this.findSuchUserInHall(name, hall)
 
         if(!isThereThisUser){
             user = await this.UserConnection.insertOne({
                 name,
                 victories: 0,
                 loses: 0,
-                hall: "1111",
+                hall,
                 ping: true,
                 isFighting: false,
                 consecutives: 0,
@@ -34,8 +34,8 @@ class User {
         }
     }
 
-    static async findSuchUserInHall(name, hallNumber){
-        const user = await this.UserConnection.findOne({name, hallNumber})
+    static async findSuchUserInHall(name, hall){
+        const user = await this.UserConnection.findOne({name, hall})
 
         return user
     }
