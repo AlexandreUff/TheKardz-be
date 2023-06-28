@@ -1,9 +1,8 @@
 const express = require('express')
 const server = express()
 
-server.get('/:id', (req, res) => {
-    const { id } = req.params
-    return res.send(`FOIS ${id}`)
-})
+const gameRoutes = require('./routes/gameRoutes')
+
+server.use('/game', gameRoutes)
 
 server.listen(3001)
