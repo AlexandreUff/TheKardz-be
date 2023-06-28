@@ -3,7 +3,7 @@ const conn = require('../db/conn')
 
 class Hall {
 
-    HallConnection = conn.db().collection("hall")
+    static HallConnection = conn.db().collection("hall")
 
     static async create(){
         let hall
@@ -13,7 +13,7 @@ class Hall {
         const isThereThisNumber = await this.findHall(hallNumberGerated)
 
         if(!isThereThisNumber){
-            hall = await HallConnection.insertOne({
+            hall = await this.HallConnection.insertOne({
                 number: hallNumberGerated,
                 members: []
             })
@@ -25,7 +25,7 @@ class Hall {
     }
 
     static async findHall(hallNumber){
-        const hall = await HallConnection.findOne({ number: hallNumber })
+        const hall = await this.HallConnection.findOne({ number: hallNumber })
 
         return hall
     }

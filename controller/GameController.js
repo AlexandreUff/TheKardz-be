@@ -1,5 +1,8 @@
+const Hall = require("../models/Hall")
+
 module.exports = class GameController {
-    static connect(req, res){
-        return res.send("Chegastes aqui.")
+    static async connect(req, res){
+        const test = await Hall.create()
+        return res.send(test)
     }
 }
