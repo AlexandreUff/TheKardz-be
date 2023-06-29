@@ -7,7 +7,7 @@ class Hall {
     static HallConnection = conn.db().collection("hall")
 
     static async create(userName){
-        let hall
+        let data
 
         const hallNumberGerated = HallNumberGerator()
 
@@ -15,15 +15,21 @@ class Hall {
 
         if(!isThereThisNumber){
             const user = await User.create(userName, hallNumberGerated)
-            hall = await this.HallConnection.insertOne({
+            const hall = await this.HallConnection.insertOne({
                 number: hallNumberGerated,
                 members: [user.insertedId.toString()]
             })
+
+            data = {
+                user: user.insertedId.toString(),
+                hall: hallNumberGerated,
+            }
+
         } else {
             await this.create()
         }
 
-        return hall
+        return data
     }
 
     static async findHall(hallNumber){
