@@ -3,7 +3,7 @@ const conn = require('../db/conn')
 class User {
     static UserConnection = conn.db().collection("user")
 
-    static async create(name, hall){
+    static async createInHall(name, hall){
         let user
 
         const isThereThisUser = await this.findSuchUserInHall(name, hall)

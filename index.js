@@ -1,10 +1,10 @@
 const express = require('express')
 const server = express()
 
-const gameRoutes = require('./routes/gameRoutes')
+const hallRoutes = require('./routes/hallRoutes')
 const userRoutes = require('./routes/userRoutes')
 
-server.use('/game', gameRoutes)
+server.use('/hall', hallRoutes)
 server.use('/user', userRoutes)
 
 server.listen(3001)
