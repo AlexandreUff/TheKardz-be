@@ -3,6 +3,6 @@ const router = express.Router()
 
 const UserController = require('../controller/UserController')
 
-router.get('/:name/:id', UserController.create)
+router.get('/:name/:hall', UserController.createInHall)
 
 module.exports = router

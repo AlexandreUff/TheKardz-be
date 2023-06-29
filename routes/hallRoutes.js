@@ -3,6 +3,6 @@ const router = express.Router()
 
 const HallController = require('../controller/HallController')
 
-router.get('/', HallController.connect)
+router.get('/:userName', HallController.connect)
 
 module.exports = router

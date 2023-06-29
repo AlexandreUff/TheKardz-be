@@ -1,11 +1,12 @@
 const HallNumberGerator = require('../Utils/HallNumberGerator')
 const conn = require('../db/conn')
+const User = require('./User')
 
 class Hall {
 
     static HallConnection = conn.db().collection("hall")
 
-    static async create(){
+    static async create(userName){
         let hall
 
         const hallNumberGerated = HallNumberGerator()
@@ -13,9 +14,11 @@ class Hall {
         const isThereThisNumber = await this.findHall(hallNumberGerated)
 
         if(!isThereThisNumber){
+            const user = await User.create(userName, hallNumberGerated)
+            console.log("USER", user)
             hall = await this.HallConnection.insertOne({
                 number: hallNumberGerated,
-                members: []
+                members: [user.insertedId.toString()]
             })
         } else {
             await this.create()

@@ -1,9 +1,9 @@
 const User = require("../models/User")
 
 module.exports = class UserController {
-    static async create(req, res){
-        const {name, id} = req.params
-        const data = await User.createInHall(name, id)
+    static async createInHall(req, res){
+        const {name, hall} = req.params
+        const data = await User.createInHall(name, hall)
         return res.send(data)
     }
 }
