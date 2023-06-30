@@ -1,5 +1,4 @@
 const conn = require('../db/conn')
-const Hall = require('./Hall')
 
 class User {
     static UserConnection = conn.db().collection("user")
@@ -19,7 +18,7 @@ class User {
         return user
     }
 
-    static async createInHall(name, hall){
+    static async createInHall(name, hall, HallModel){
         let user
 
         const isThereThisUser = await this.findSuchUserInHall(name, hall)
@@ -36,7 +35,7 @@ class User {
                 lineNumber: 0
             })
 
-            await Hall.insertUserInHall(
+            await HallModel.insertUserInHall(
                 user.insertedId.toString(),
                 hall
             )

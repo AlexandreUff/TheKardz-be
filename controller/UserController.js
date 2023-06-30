@@ -1,4 +1,5 @@
 const User = require("../models/User")
+const Hall = require("../models/Hall")
 
 module.exports = class UserController {
     static async createInHall(req, res){
@@ -7,7 +8,7 @@ module.exports = class UserController {
         let data
 
         if(name){
-            data = await User.createInHall(name, hall)
+            data = await User.createInHall(name, hall, Hall)
         } else {
             data = {
                 isCreated: false,
@@ -15,7 +16,7 @@ module.exports = class UserController {
                 data: {},
             }
         }
-        
+
         return res.send(data)
     }
 }
