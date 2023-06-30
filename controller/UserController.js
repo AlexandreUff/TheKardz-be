@@ -7,7 +7,7 @@ module.exports = class UserController {
 
         let data
 
-        if(name){
+        if(name && hall){
             data = await User.createInHall(name, hall, Hall)
         } else {
             data = {

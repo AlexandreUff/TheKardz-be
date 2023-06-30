@@ -21,6 +21,14 @@ class User {
     static async createInHall(name, hall, HallModel){
         let user
 
+        const isExistsThisHall = await HallModel.findHall(hall)
+
+        if(!isExistsThisHall) return {
+            isCreated: false,
+            message: "O número desta sala é inválido ou não existe.",
+            data: null
+        }
+
         const isThereThisUser = await this.findSuchUserInHall(name, hall)
 
         if(!isThereThisUser){

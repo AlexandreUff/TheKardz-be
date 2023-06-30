@@ -15,7 +15,7 @@ class Hall {
 
         if(!isThereThisNumber){
             const user = await User.create(userName, hallNumberGerated)
-            const hall = await this.HallConnection.insertOne({
+            await this.HallConnection.insertOne({
                 number: hallNumberGerated,
                 members: [user.insertedId.toString()]
             })
