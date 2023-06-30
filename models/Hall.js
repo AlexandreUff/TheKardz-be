@@ -37,6 +37,15 @@ class Hall {
 
         return hall
     }
+
+    static async insertUserInHall(userId, hallNumber){
+        const data = await this.HallConnection.updateOne(
+            {number: hallNumber},
+            {$addToSet: { members: userId }}
+        )
+
+        return data
+    }
 }
 
 module.exports = Hall

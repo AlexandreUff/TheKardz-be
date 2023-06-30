@@ -1,4 +1,5 @@
 const conn = require('../db/conn')
+const Hall = require('./Hall')
 
 class User {
     static UserConnection = conn.db().collection("user")
@@ -34,6 +35,11 @@ class User {
                 consecutives: 0,
                 lineNumber: 0
             })
+
+            await Hall.insertUserInHall(
+                user.insertedId.toString(),
+                hall
+            )
         } else {
             return {
                 isCreated: false,
