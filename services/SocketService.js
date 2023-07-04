@@ -14,6 +14,14 @@ module.exports = function SocketConnectionStart(){
       console.log('Um cliente se conectou.');
     
       // Adicione aqui o código para lidar com os eventos de socket.io
+
+      socket.on("attack", (msg) => {
+        console.log(msg)
+
+        setTimeout(()=>{
+          socket.emit("send","Olá!")
+        }, 5000)
+      })
     
       socket.on('disconnect', () => {
         console.log('Um cliente se desconectou.');
