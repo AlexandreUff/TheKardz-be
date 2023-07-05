@@ -8,14 +8,14 @@ module.exports = class HallController {
                 data = await Hall.create(userName)
             } else {
                 return res.send({
-                    isCreated: false,
+                    status: false,
                     message: "Nome de usuário não preenchido.",
                     data: {}
                 })
             }
 
         return res.send({
-            isCreated: true,
+            status: true,
             message: "Sala e usuário criados com sucesso.",
             data
         })

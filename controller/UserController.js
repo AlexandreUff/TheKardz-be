@@ -11,7 +11,7 @@ module.exports = class UserController {
             data = await User.createInHall(name, hall, Hall)
         } else {
             data = {
-                isCreated: false,
+                status: false,
                 message: "O nome usuário deve ser preenchido",
                 data: {},
             }

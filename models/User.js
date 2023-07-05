@@ -24,7 +24,7 @@ class User {
         const isExistsThisHall = await HallModel.findHall(hall)
 
         if(!isExistsThisHall) return {
-            isCreated: false,
+            status: false,
             message: "O número desta sala é inválido ou não existe.",
             data: null
         }
@@ -49,14 +49,14 @@ class User {
             )
         } else {
             return {
-                isCreated: false,
+                status: false,
                 message: "Nome de usuário já em uso nesta sala.",
                 data: null
             }
         }
 
         return {
-            isCreated: true,
+            status: true,
             message: "Usuário criado com sucesso.",
             data: user
         }
