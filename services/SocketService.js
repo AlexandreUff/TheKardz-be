@@ -5,7 +5,6 @@ const app = express();
 
 
 module.exports = function SocketConnectionStart(){
-  console.log("Bateu aqui.")
   const server = app.listen(3002);
 
   const io = socketIO(server);
