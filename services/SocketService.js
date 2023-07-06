@@ -18,7 +18,7 @@ module.exports = function SocketConnectionStart(){
         console.log(msg)
 
         setTimeout(()=>{
-          socket.emit("send","Olá!")
+          socket.emit("send",{msg: "Olá!"})
         }, 5000)
       })
     
