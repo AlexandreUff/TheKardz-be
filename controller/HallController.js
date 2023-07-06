@@ -20,4 +20,34 @@ module.exports = class HallController {
             data
         })
     }
+
+    static async findHall(req, res){
+        const number = req.query.number
+
+        let data
+
+        if(!number){
+            return res.send({
+                status: false,
+                message: "Número de sala não preenchido.",
+                data: {}
+            })
+        } else {
+            data = await Hall.findHall(number)
+        }
+
+        if(data){
+            return res.send({
+                status: true,
+                message: "Sala encontrada.",
+                data: data.number
+            })
+        } else {
+            return res.send({
+                status: false,
+                message: "Sala não encontrada.",
+                data: {}
+            })
+        }
+    }
 }
