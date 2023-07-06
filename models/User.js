@@ -25,7 +25,7 @@ class User {
 
         if(!isExistsThisHall) return {
             status: false,
-            message: "O número desta sala é inválido ou não existe.",
+            message: "O número desta sala é inválido ou não existe mais.", //Fazer um este para esse payload
             data: null
         }
 
