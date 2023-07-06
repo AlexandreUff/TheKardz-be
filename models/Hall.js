@@ -17,7 +17,9 @@ class Hall {
             const user = await User.create(userName, hallNumberGerated)
             await this.HallConnection.insertOne({
                 number: hallNumberGerated,
-                members: [user.insertedId.toString()]
+                members: [user.insertedId.toString()],
+                isPublic: false,
+                name: "",
             })
 
             data = {
