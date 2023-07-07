@@ -58,7 +58,9 @@ class User {
         return {
             status: true,
             message: "Usuário criado com sucesso.",
-            data: user
+            data: {
+                userId: user.insertedId
+            }
         }
     }
 

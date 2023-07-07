@@ -23,7 +23,7 @@ class Hall {
             })
 
             data = {
-                user: user.insertedId.toString(),
+                userId: user.insertedId.toString(),
                 hall: hallNumberGerated,
             }
 
