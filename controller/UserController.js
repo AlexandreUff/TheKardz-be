@@ -12,11 +12,7 @@ module.exports = class UserController {
             const hallDatas = await User.createInHall(name, hall, Hall)
             response = new DataPayload(hallDatas.status, hallDatas.message, hallDatas.data)
         } else {
-            response = /* {
-                status: false,
-                message: "O nome usuário deve ser preenchido",
-                data: {},
-            } */ new DataPayload(false, "O nome usuário deve ser preenchido.", {})
+            response = new DataPayload(false, "O nome usuário deve ser preenchido.", {})
         }
 
         return res.send(response)

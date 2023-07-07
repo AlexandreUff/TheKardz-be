@@ -28,8 +28,8 @@ class User {
 
         if(!isExistsThisHall) return {
             status: false,
-            message: "O número desta sala é inválido ou não existe mais.", //Fazer um este para esse payload
-            data: null
+            message: "O número desta sala é inválido ou não existe mais.",
+            data: {}
         }
 
         const isThereThisUser = await this.findSuchUserInHall(name, hall)
@@ -45,7 +45,7 @@ class User {
             return {
                 status: false,
                 message: "Nome de usuário já em uso nesta sala.",
-                data: null
+                data: {}
             }
         }
 
