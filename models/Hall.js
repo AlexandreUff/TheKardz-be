@@ -4,6 +4,13 @@ const User = require('./User')
 
 class Hall {
 
+    constructor(hallNumber, userCreatorId){
+            this.number = hallNumber;
+            this.members = [userCreatorId];
+            this.isPublic = false;
+            this.name = "";
+    }
+
     static HallConnection = conn.db().collection("hall")
 
     static async create(userName){
@@ -15,12 +22,12 @@ class Hall {
 
         if(!isThereThisNumber){
             const user = await User.create(userName, hallNumberGerated)
-            await this.HallConnection.insertOne({
-                number: hallNumberGerated,
-                members: [user.insertedId.toString()],
-                isPublic: false,
-                name: "",
-            })
+            await this.HallConnection.insertOne(
+                new Hall(
+                    hallNumberGerated,
+                    user.insertedId.toString()
+                )
+            )
 
             data = {
                 userId: user.insertedId.toString(),

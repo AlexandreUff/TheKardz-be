@@ -1,19 +1,22 @@
 const conn = require('../db/conn')
 
 class User {
+
+    constructor(name, hall){
+        this.name = name;
+        this.victories = 0;
+        this.loses = 0,
+        this.hall = hall,
+        this.ping = true,
+        this.isFighting = false,
+        this.consecutives = 0,
+        this.lineNumber = 0
+    }
+
     static UserConnection = conn.db().collection("user")
 
     static async create(name, hall){
-        const user = await this.UserConnection.insertOne({
-                name,
-                victories: 0,
-                loses: 0,
-                hall,
-                ping: true,
-                isFighting: false,
-                consecutives: 0,
-                lineNumber: 0
-            })
+        const user = await this.UserConnection.insertOne(new User(name, hall))
 
         return user
     }
@@ -32,16 +35,7 @@ class User {
         const isThereThisUser = await this.findSuchUserInHall(name, hall)
 
         if(!isThereThisUser){
-            user = await this.UserConnection.insertOne({
-                name,
-                victories: 0,
-                loses: 0,
-                hall,
-                ping: true,
-                isFighting: false,
-                consecutives: 0,
-                lineNumber: 0
-            })
+            user = await this.UserConnection.insertOne(new User(name, hall))
 
             await HallModel.insertUserInHall(
                 user.insertedId.toString(),
