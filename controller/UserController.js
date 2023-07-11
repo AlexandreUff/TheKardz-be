@@ -17,4 +17,12 @@ module.exports = class UserController {
 
         return res.send(response)
     }
+
+    static async getAllUsersInSuchHall(hallNumber){
+        const data = await User.getAllUsersInSuchHall(hallNumber)
+
+        const response = new DataPayload(true, "Usuários listados com sucesso", data)
+
+        return response
+    }
 }

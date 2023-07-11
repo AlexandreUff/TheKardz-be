@@ -63,6 +63,12 @@ class User {
 
         return user
     }
+
+    static getAllUsersInSuchHall(hallNumber){
+        const users = this.UserConnection.find({ hall: hallNumber }).toArray()
+
+        return users
+    }
 }
 
 module.exports = User

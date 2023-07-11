@@ -1,5 +1,6 @@
 const express = require('express');
 const socketIO = require('socket.io');
+const UserController = require('../controller/UserController');
 
 const app = express();
 
@@ -13,6 +14,11 @@ module.exports = function SocketConnectionStart(){
       console.log('Um cliente se conectou.');
     
       // Adicione aqui o código para lidar com os eventos de socket.io
+
+      socket.on("credential", async (credential) => {
+        const response = await UserController.getAllUsersInSuchHall(credential)
+        socket.emit("getUsers",response)
+      })
 
       socket.on("attack", (msg) => {
         console.log(msg)
