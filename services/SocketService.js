@@ -33,14 +33,6 @@ module.exports = function SocketConnectionStart(){
         /* io.to(userCredential).emit("report", report); */
         socket.broadcast.to(userCredential).emit("report", report);
       })
-
-      socket.on("attack", (msg) => {
-        console.log(msg)
-
-        setTimeout(()=>{
-          socket.emit("send",{msg: "Olá!"})
-        }, 5000)
-      })
     
       socket.on('disconnect', () => {
         console.log('Um cliente se desconectou.');
