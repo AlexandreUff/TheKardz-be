@@ -10,17 +10,28 @@ module.exports = function SocketConnectionStart(){
 
   const io = socketIO(server);
 
-    io.on('connection', (socket) => {
+  
+  io.on('connection', (socket) => {
+      let userCredential;
       console.log('Um cliente se conectou.');
     
       // Adicione aqui o código para lidar com os eventos de socket.io
 
       socket.on("credential", async (credential) => {
-        socket.join(credential.hall)
+
+        userCredential = credential.hall
+
+        socket.join(userCredential)
 
         const response = await UserController.getAllUsersInSuchHall(credential.hall)
         /* socket.emit("getUsers",response) */
         io.to(credential.hall).emit("getUsers", response);
+      })
+
+      socket.on("report", (report) => {
+        console.log("Cred",userCredential, report.author)
+        /* io.to(userCredential).emit("report", report); */
+        socket.broadcast.to(userCredential).emit("report", report);
       })
 
       socket.on("attack", (msg) => {
