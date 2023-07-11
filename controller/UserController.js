@@ -25,4 +25,12 @@ module.exports = class UserController {
 
         return response
     }
+
+    static async deleteUserById(userId){
+        const data = await User.deleteUserById(userId)
+
+        const response = new DataPayload(true, "Usuário removido com sucesso", data)
+
+        return response
+    }
 }

@@ -8,4 +8,4 @@ class ReportModel{
     }
 }
 
-export default ReportModel
+module.exports =  ReportModel

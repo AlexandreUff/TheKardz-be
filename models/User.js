@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const conn = require('../db/conn')
 
 class User {
@@ -68,6 +69,12 @@ class User {
         const users = this.UserConnection.find({ hall: hallNumber }).toArray()
 
         return users
+    }
+
+    static async deleteUserById(userId){
+        const response = await this.UserConnection.deleteOne({_id: new ObjectId(userId)})
+
+        return response
     }
 }
 

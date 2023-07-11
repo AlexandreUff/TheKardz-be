@@ -1,6 +1,7 @@
 const express = require('express');
 const socketIO = require('socket.io');
 const UserController = require('../controller/UserController');
+const ReportModel = require('../Utils/ReportModel')
 
 const app = express();
 
@@ -25,6 +26,16 @@ module.exports = function SocketConnectionStart(){
 
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
         /* socket.emit("getUsers",response) */
+        socket.broadcast.to(userCredentials.hall).emit(
+          "report",
+          new ReportModel(
+            "game_server",
+            "log",
+            `${userCredentials.userName} entrou.`,
+            false,
+            new Date()
+          )
+          );
         io.to(userCredentials.hall).emit("getUsers", response);
       })
 
@@ -34,8 +45,23 @@ module.exports = function SocketConnectionStart(){
         socket.broadcast.to(userCredentials.hall).emit("report", report);
       })
     
-      socket.on('disconnect', () => {
+      socket.on('disconnect', async () => {
         console.log('Um cliente se desconectou.');
+        await UserController.deleteUserById(userCredentials.userId)
+        socket.broadcast.to(userCredentials.hall).emit(
+          "report",
+          new ReportModel(
+            "game_server",
+            "log",
+            `${userCredentials.userName} se desconectou.`,
+            false,
+            new Date()
+          )
+          );
+        
+        const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
+        io.to(userCredentials.hall).emit("getUsers", response);
+        
       });
     });
 }
