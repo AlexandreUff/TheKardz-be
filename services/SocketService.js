@@ -16,7 +16,7 @@ module.exports = function SocketConnectionStart(){
       // Adicione aqui o código para lidar com os eventos de socket.io
 
       socket.on("credential", async (credential) => {
-        const response = await UserController.getAllUsersInSuchHall(credential)
+        const response = await UserController.getAllUsersInSuchHall(credential.hall)
         socket.emit("getUsers",response)
       })
 
