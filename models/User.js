@@ -3,7 +3,7 @@ const conn = require('../db/conn')
 
 class User {
 
-    constructor(name, hall){
+    constructor(name, hall, lineNumber){
         this.name = name;
         this.victories = 0;
         this.loses = 0,
@@ -11,13 +11,13 @@ class User {
         this.ping = true,
         this.isFighting = false,
         this.consecutives = 0,
-        this.lineNumber = 0
+        this.lineNumber = lineNumber
     }
 
     static UserConnection = conn.db().collection("user")
 
     static async create(name, hall){
-        const user = await this.UserConnection.insertOne(new User(name, hall))
+        const user = await this.UserConnection.insertOne(new User(name, hall, 1))
 
         return user
     }
@@ -36,7 +36,8 @@ class User {
         const isThereThisUser = await this.findSuchUserInHall(name, hall)
 
         if(!isThereThisUser){
-            user = await this.UserConnection.insertOne(new User(name, hall))
+            const linePosition = await this.UserConnection.countDocuments({hall})
+            user = await this.UserConnection.insertOne(new User(name, hall, linePosition + 1))
 
             await HallModel.insertUserInHall(
                 user.insertedId.toString(),
