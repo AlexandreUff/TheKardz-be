@@ -60,6 +60,10 @@ module.exports = function SocketConnectionStart(){
         
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
         io.to(userCredentials.hall).emit("getUsers", response);
+        socket.leave(userCredentials.hall)
+
+        /* console.log("NUMERO:",!!io.sockets.adapter.rooms.get(userCredentials.hall)?.size === true) */
+        if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
         
       });
     });
