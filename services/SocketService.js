@@ -15,8 +15,6 @@ module.exports = function SocketConnectionStart(){
   io.on('connection', (socket) => {
       let userCredentials;
       console.log('Um cliente se conectou.');
-    
-      // Adicione aqui o código para lidar com os eventos de socket.io
 
       socket.on("credential", async (credential) => {
 
@@ -25,7 +23,6 @@ module.exports = function SocketConnectionStart(){
         socket.join(userCredentials.hall)
 
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
-        /* socket.emit("getUsers",response) */
         socket.broadcast.to(userCredentials.hall).emit(
           "report",
           new ReportModel(
@@ -39,8 +36,12 @@ module.exports = function SocketConnectionStart(){
         io.to(userCredentials.hall).emit("getUsers", response);
       })
 
+      socket.on("reloadUsersInIntance", (users) => {
+        console.log("Dados chegaram")
+        users
+      })
+
       socket.on("report", (report) => {
-        /* io.to(userCredential).emit("report", report); */
         socket.broadcast.to(userCredentials.hall).emit("report", report);
       })
     
@@ -62,7 +63,6 @@ module.exports = function SocketConnectionStart(){
         io.to(userCredentials.hall).emit("getUsers", response);
         socket.leave(userCredentials.hall)
 
-        /* console.log("NUMERO:",!!io.sockets.adapter.rooms.get(userCredentials.hall)?.size === true) */
         if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
         
       });
