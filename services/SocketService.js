@@ -40,7 +40,6 @@ module.exports = function SocketConnectionStart(){
       })
 
       socket.on("report", (report) => {
-        console.log("Cred",userCredentials, report.author)
         /* io.to(userCredential).emit("report", report); */
         socket.broadcast.to(userCredentials.hall).emit("report", report);
       })
