@@ -14,6 +14,9 @@ module.exports = function SocketConnectionStart(){
   
   io.on('connection', (socket) => {
       let userCredentials;
+
+      let usersInThisHall;
+
       console.log('Um cliente se conectou.');
 
       socket.on("credential", async (credential) => {
@@ -23,6 +26,9 @@ module.exports = function SocketConnectionStart(){
         socket.join(userCredentials.hall)
 
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
+
+        usersInThisHall = [...response.data];
+
         socket.broadcast.to(userCredentials.hall).emit(
           "report",
           new ReportModel(
@@ -34,6 +40,11 @@ module.exports = function SocketConnectionStart(){
           )
           );
         io.to(userCredentials.hall).emit("getUsers", response);
+
+        if(io.sockets.adapter.rooms.get(userCredentials.hall).size >= 2){
+          const thereIsAFight = usersInThisHall.findIndex(index => index.isFighting === true)
+          console.log(thereIsAFight)
+        }
       })
 
       socket.on("reloadUsersInIntance", (users) => {
