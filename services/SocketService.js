@@ -42,8 +42,30 @@ module.exports = function SocketConnectionStart(){
         io.to(userCredentials.hall).emit("getUsers", response);
 
         if(io.sockets.adapter.rooms.get(userCredentials.hall).size >= 2){
-          const thereIsAFight = usersInThisHall.findIndex(index => index.isFighting === true)
+          console.log(usersInThisHall)
+          const thereIsAFight = usersInThisHall.find(index => index.isFighting === true)
           console.log(thereIsAFight)
+
+          if(!thereIsAFight){
+            console.log("Inicia ciclo de partida!")
+            socket.broadcast.to(userCredentials.hall).emit(
+            "report",
+            new ReportModel(
+              "game_server",
+              "log",
+              `${userCredentials.userName} vs ${usersInThisHall[0].name}.`,
+              false,
+              new Date()
+            )
+            );
+
+            io.to(userCredentials.hall).emit("start-fight", {
+              players: [usersInThisHall[0], usersInThisHall[1]]
+            })
+
+          } else {
+            console.log("Apenas aguarda chegar sua vez")
+          }
         }
       })
 
