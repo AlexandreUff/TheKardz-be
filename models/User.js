@@ -77,6 +77,15 @@ class User {
 
         return response
     }
+
+    static async updateUser(user){
+        const response = await this.UserConnection.updateOne(
+            {_id: new ObjectId(user._id)},
+            {$set:{...user}}
+            )
+
+        return response
+    }
 }
 
 module.exports = User

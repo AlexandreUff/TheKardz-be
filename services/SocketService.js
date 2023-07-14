@@ -39,14 +39,20 @@ module.exports = function SocketConnectionStart(){
             new Date()
           )
           );
-        io.to(userCredentials.hall).emit("getUsers", response);
+        /* io.to(userCredentials.hall).emit("getUsers", response); */
 
         if(io.sockets.adapter.rooms.get(userCredentials.hall).size >= 2){
-          console.log(usersInThisHall)
+          /* console.log(usersInThisHall) */
           const thereIsAFight = usersInThisHall.find(index => index.isFighting === true)
-          console.log(thereIsAFight)
+          /* console.log(thereIsAFight) */
 
           if(!thereIsAFight){
+            usersInThisHall[0].isFighting = true
+            usersInThisHall[1].isFighting = true
+
+            console.log(await UserController.updateUser(usersInThisHall[0]))
+            console.log(await UserController.updateUser(usersInThisHall[1]))
+
             console.log("Inicia ciclo de partida!")
             socket.broadcast.to(userCredentials.hall).emit(
             "report",
@@ -67,11 +73,8 @@ module.exports = function SocketConnectionStart(){
             console.log("Apenas aguarda chegar sua vez")
           }
         }
-      })
 
-      socket.on("reloadUsersInIntance", (users) => {
-        console.log("Dados chegaram")
-        users
+        io.to(userCredentials.hall).emit("getUsers", usersInThisHall);
       })
 
       socket.on("report", (report) => {
