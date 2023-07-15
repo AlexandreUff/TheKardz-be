@@ -96,7 +96,7 @@ module.exports = function SocketConnectionStart(){
           );
         
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
-        io.to(userCredentials.hall).emit("getUsers", response);
+        io.to(userCredentials.hall).emit("getUsers", response.data);
         socket.leave(userCredentials.hall)
 
         if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
