@@ -18,6 +18,14 @@ module.exports = class UserController {
         return res.send(response)
     }
 
+    static async findUserById(userId){
+        const data = await User.findUserById(userId)
+
+        const response = new DataPayload(true, "Usuário encontrado com sucesso", data)
+
+        return response
+    }
+
     static async getAllUsersInSuchHall(hallNumber){
         const data = await User.getAllUsersInSuchHall(hallNumber)
 

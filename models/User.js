@@ -60,6 +60,12 @@ class User {
         }
     }
 
+    static async findUserById(userId){
+        const user = await this.UserConnection.findOne({_id: new ObjectId(userId)})
+
+        return user
+    }
+
     static async findSuchUserInHall(name, hall){
         const user = await this.UserConnection.findOne({name, hall})
 

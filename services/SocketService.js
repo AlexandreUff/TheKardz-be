@@ -83,7 +83,28 @@ module.exports = function SocketConnectionStart(){
     
       socket.on('disconnect', async () => {
         console.log('Um cliente se desconectou.');
+        const thisPlayerById = await UserController.findUserById(userCredentials.userId)
+
         await UserController.deleteUserById(userCredentials.userId)
+
+        const allUsers = await UserController.getAllUsersInSuchHall(userCredentials.hall)
+
+        const usersWithNewLineNumber = allUsers.data.map(user => {
+          if(user.lineNumber > thisPlayerById.data.lineNumber){
+            user.lineNumber--
+            return user
+          } else {
+            return user
+          }
+        })
+
+        console.log("Usuário novos:", usersWithNewLineNumber)
+
+        /* Mande usersWithNewLineNumber a todos, mas só salve no banco os modificados*/
+        usersWithNewLineNumber.forEach(async (user) => {
+          await UserController.updateUser(user)
+        });
+
         socket.broadcast.to(userCredentials.hall).emit(
           "report",
           new ReportModel(
@@ -95,8 +116,7 @@ module.exports = function SocketConnectionStart(){
           )
           );
         
-        const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
-        io.to(userCredentials.hall).emit("getUsers", response.data);
+        io.to(userCredentials.hall).emit("getUsers", usersWithNewLineNumber);
         socket.leave(userCredentials.hall)
 
         if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
