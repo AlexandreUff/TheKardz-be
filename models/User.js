@@ -17,7 +17,7 @@ class User {
     static UserConnection = conn.db().collection("user")
 
     static async create(name, hall){
-        const user = await this.UserConnection.insertOne(new User(name, hall, 1))
+        const user = await this.UserConnection.insertOne(new User(name, hall, 0))
 
         return user
     }
@@ -37,7 +37,7 @@ class User {
 
         if(!isThereThisUser){
             const linePosition = await this.UserConnection.countDocuments({hall})
-            user = await this.UserConnection.insertOne(new User(name, hall, linePosition + 1))
+            user = await this.UserConnection.insertOne(new User(name, hall, linePosition))
 
             await HallModel.insertUserInHall(
                 user.insertedId.toString(),
