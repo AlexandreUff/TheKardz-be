@@ -102,7 +102,9 @@ module.exports = function SocketConnectionStart(){
 
         /* Mande usersWithNewLineNumber a todos, mas só salve no banco os modificados*/
         usersWithNewLineNumber.forEach(async (user) => {
-          await UserController.updateUser(user)
+          if(user.lineNumber >= thisPlayerById.data.lineNumber){
+            await UserController.updateUser(user)
+          }
         });
 
         socket.broadcast.to(userCredentials.hall).emit(
