@@ -80,6 +80,10 @@ module.exports = function SocketConnectionStart(){
       socket.on("report", (report) => {
         socket.broadcast.to(userCredentials.hall).emit("report", report);
       })
+
+      socket.on("starting-round", () => {
+        io.to(userCredentials.hall).emit("start-round")
+      })
     
       socket.on('disconnect', async () => {
         console.log('Um cliente se desconectou.');
