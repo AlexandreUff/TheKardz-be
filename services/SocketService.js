@@ -50,8 +50,8 @@ module.exports = function SocketConnectionStart(){
             usersInThisHall[0].isFighting = true
             usersInThisHall[1].isFighting = true
 
-            console.log(await UserController.updateUser(usersInThisHall[0]))
-            console.log(await UserController.updateUser(usersInThisHall[1]))
+            await UserController.updateUser(usersInThisHall[0])
+            await UserController.updateUser(usersInThisHall[1])
 
             console.log("Inicia ciclo de partida!")
             socket.broadcast.to(userCredentials.hall).emit(
@@ -82,6 +82,7 @@ module.exports = function SocketConnectionStart(){
       })
 
       socket.on("starting-round", () => {
+        /* VER SE O BROADCAST TALVEZ NÃO SEJA MAIS INTERESSANTE PRA EVITAR DUPLICAÇÃO*/
         io.to(userCredentials.hall).emit("start-round")
       })
     
@@ -102,14 +103,14 @@ module.exports = function SocketConnectionStart(){
           }
         })
 
-        console.log("Usuário novos:", usersWithNewLineNumber)
-
         /* Mande usersWithNewLineNumber a todos, mas só salve no banco os modificados*/
         usersWithNewLineNumber.forEach(async (user) => {
           if(user.lineNumber >= thisPlayerById.data.lineNumber){
             await UserController.updateUser(user)
           }
         });
+
+        io.to(userCredentials.hall).emit("fight-status","end-fight")
 
         socket.broadcast.to(userCredentials.hall).emit(
           "report",
@@ -124,6 +125,15 @@ module.exports = function SocketConnectionStart(){
         
         io.to(userCredentials.hall).emit("getUsers", usersWithNewLineNumber);
         socket.leave(userCredentials.hall)
+
+        //Caso seja um player que esteja jogando
+        const isAPlayerFighting = thisPlayerById.data.lineNumber === 0 || thisPlayerById.data.lineNumber === 1
+        const isThereMoreThanOne = io.sockets.adapter.rooms.get(userCredentials.hall)?.size > 1
+
+        if(isAPlayerFighting && isThereMoreThanOne){
+          console.log("Foi")
+          io.to(userCredentials.hall).emit("start-fight")
+        }
 
         if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
         
