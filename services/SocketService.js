@@ -54,7 +54,7 @@ module.exports = function SocketConnectionStart(){
             await UserController.updateUser(usersInThisHall[1]) */
 
             console.log("Inicia ciclo de partida!")
-            socket.broadcast.to(userCredentials.hall).emit(
+            io.to(userCredentials.hall).emit(
             "report",
             new ReportModel(
               "game_server",
