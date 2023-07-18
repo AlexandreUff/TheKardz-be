@@ -65,9 +65,7 @@ module.exports = function SocketConnectionStart(){
             )
             );
 
-            io.to(userCredentials.hall).emit("start-fight", {
-              players: [usersInThisHall[0], usersInThisHall[1]]
-            })
+            io.to(userCredentials.hall).emit("fight-status","start-fight")
 
           } else {
             console.log("Apenas aguarda chegar sua vez")
@@ -83,7 +81,7 @@ module.exports = function SocketConnectionStart(){
 
       socket.on("starting-round", () => {
         /* VER SE O BROADCAST TALVEZ NÃO SEJA MAIS INTERESSANTE PRA EVITAR DUPLICAÇÃO*/
-        io.to(userCredentials.hall).emit("start-round")
+        io.to(userCredentials.hall).emit("fight-status","start-round")
       })
     
       socket.on('disconnect', async () => {
@@ -132,7 +130,7 @@ module.exports = function SocketConnectionStart(){
 
         if(isAPlayerFighting && isThereMoreThanOne){
           console.log("Foi")
-          io.to(userCredentials.hall).emit("start-fight")
+          io.to(userCredentials.hall).emit("fight-status","start-fight")
         }
 
         if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
