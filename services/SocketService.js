@@ -79,9 +79,14 @@ module.exports = function SocketConnectionStart(){
         socket.broadcast.to(userCredentials.hall).emit("report", report);
       })
 
-      socket.on("starting-round", () => {
+      socket.on("starting-round", async () => {
         /* VER SE O BROADCAST TALVEZ NÃO SEJA MAIS INTERESSANTE PRA EVITAR DUPLICAÇÃO*/
-        io.to(userCredentials.hall).emit("fight-status","start-round")
+        const thisPlayerById = await UserController.findUserById(userCredentials.userId)
+
+        if(thisPlayerById.data.lineNumber === 0){
+          console.log(`${thisPlayerById.data.name} de idx ${thisPlayerById.data.lineNumber} na fila iniciou a luta.`)
+          io.to(userCredentials.hall).emit("fight-status","start-round")
+        }
       })
     
       socket.on('disconnect', async () => {
