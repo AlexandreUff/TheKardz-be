@@ -23,6 +23,8 @@ module.exports = function SocketConnectionStart(){
 
         userCredentials = credential
 
+        console.log("Credenciais de entrada:",userCredentials)
+
         socket.join(userCredentials.hall)
 
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
@@ -91,6 +93,7 @@ module.exports = function SocketConnectionStart(){
     
       socket.on('disconnect', async () => {
         console.log('Um cliente se desconectou.');
+        console.log("Credenciais de saída:",userCredentials)
         const thisPlayerById = await UserController.findUserById(userCredentials.userId)
 
         await UserController.deleteUserById(userCredentials.userId)
