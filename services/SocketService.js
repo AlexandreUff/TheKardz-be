@@ -84,6 +84,13 @@ module.exports = function SocketConnectionStart(){
 
         await UserController.deleteUserById(userCredentials.userId)
 
+        //Caso seja um player que estava jogando no momento
+        const isAPlayerFighting = thisPlayerById.data.lineNumber === 0 || thisPlayerById.data.lineNumber === 1
+
+        if(isAPlayerFighting){
+          socket.broadcast.to(userCredentials.hall).emit("fight-status","end-fight")
+        }
+
         const allUsers = await UserController.getAllUsersInSuchHall(userCredentials.hall)
 
         const usersWithNewLineNumber = allUsers.data.map(user => {
@@ -116,10 +123,9 @@ module.exports = function SocketConnectionStart(){
         io.to(userCredentials.hall).emit("getUsers", usersWithNewLineNumber);
         socket.leave(userCredentials.hall)
 
-        //Caso seja um player que esteja jogando
-        const isAPlayerFighting = thisPlayerById.data.lineNumber === 0 || thisPlayerById.data.lineNumber === 1
         const isThereMoreThanOne = io.sockets.adapter.rooms.get(userCredentials.hall)?.size > 1
 
+        //Se era um player que estava jogando e se há mais de um jogador na sala, dá o start na próxima luta
         if(isAPlayerFighting && isThereMoreThanOne){
           console.log("Foi")
           io.to(userCredentials.hall).emit("fight-status","start-fight")
