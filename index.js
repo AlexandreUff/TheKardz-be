@@ -29,6 +29,12 @@ server.use('/hall', hallRoutes)
 server.use('/user', userRoutes)
 server.use('/game', gameRoutes)
 
+//Ver se esse serviço deve permanecer
+server.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
 server.listen(3001, () => {
     console.log(`Servidor iniciado na porta 3001.`);
     SocketConnectionStart();
