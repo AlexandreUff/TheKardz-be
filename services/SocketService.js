@@ -76,6 +76,10 @@ module.exports = function SocketConnectionStart(){
           io.to(userCredentials.hall).emit("fight-status","start-round")
         }
       })
+
+      socket.on("chosen-movement", (movimentData) => {
+        console.log("Movimento que chegou", movimentData)
+      })
     
       socket.on('disconnect', async () => {
         console.log('Um cliente se desconectou.');
