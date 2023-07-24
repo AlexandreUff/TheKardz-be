@@ -79,6 +79,7 @@ module.exports = function SocketConnectionStart(){
 
       socket.on("chosen-movement", (movimentData) => {
         console.log("Movimento que chegou", movimentData)
+        socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
       })
     
       socket.on('disconnect', async () => {
