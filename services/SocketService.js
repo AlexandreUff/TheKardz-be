@@ -80,7 +80,7 @@ module.exports = function SocketConnectionStart(){
       socket.on("chosen-movement", (movimentData) => {
         console.log("Movimento que chegou", movimentData)
         socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
-        io.to(userCredentials.hall).emit("fight-status","comparing-movements")
+        /* io.to(userCredentials.hall).emit("fight-status","comparing-movements") */
       })
     
       socket.on('disconnect', async () => {
