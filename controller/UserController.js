@@ -43,6 +43,7 @@ module.exports = class UserController {
     }
 
     static async updateUser(user){
+        console.log("USUARIO", user)
         const data = await User.updateUser(user)
 
         const response = new DataPayload(true, "Dados do usuário alterados com sucesso", data)
