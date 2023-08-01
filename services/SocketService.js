@@ -82,6 +82,10 @@ module.exports = function SocketConnectionStart(){
         socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
         /* io.to(userCredentials.hall).emit("fight-status","comparing-movements") */
       })
+
+      socket.on("user-save-data", async (userData) => {
+        await UserController.updateUser(userData)
+      })
     
       socket.on('disconnect', async () => {
         console.log('Um cliente se desconectou.');
