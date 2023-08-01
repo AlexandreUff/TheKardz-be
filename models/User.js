@@ -85,10 +85,15 @@ class User {
     }
 
     static async updateUser(user){
+
+        if(user._id !== new ObjectId(user._id)){
+            user._id = new ObjectId(user._id)
+        }
+
         const response = await this.UserConnection.updateOne(
-            {_id: new ObjectId(user._id)},
-            {$set:{...user}}
-            )
+            {_id: user._id},
+            {$set: {...user}}
+        )
 
         return response
     }
