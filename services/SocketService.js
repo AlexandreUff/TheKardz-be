@@ -91,19 +91,21 @@ module.exports = function SocketConnectionStart(){
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
         const usersWithOldDatas = [...response.data];
 
-        console.log("Perdedor e vencedor", data)
-
         const usersWithNewDatas = usersWithOldDatas.map(user => {
-          if(user._id === data.winner._id){
+          if(user._id.toString() === data.winner._id){
             user.lineNumber = 0
             user.victories++
-          } else if(user._id === data.loser._id){
+          } else if(user._id.toString() === data.loser._id){
             user.lineNumber = usersWithOldDatas.length-1
             user.loses++
           } else {
             user.lineNumber--
           }
+
+          return user
         })
+
+        console.log("NOVOS DADOS:",usersWithNewDatas)
 
         usersWithNewDatas.forEach(async (user) => {
           await UserController.updateUser(user)
