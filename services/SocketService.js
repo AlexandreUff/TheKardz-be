@@ -86,6 +86,32 @@ module.exports = function SocketConnectionStart(){
       socket.on("user-save-data", async (userData) => {
         await UserController.updateUser(userData)
       })
+
+      socket.on("start-new-fight", async (data)=>{
+        const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
+        const usersWithOldDatas = [...response.data];
+
+        console.log("Perdedor e vencedor", data)
+
+        const usersWithNewDatas = usersWithOldDatas.map(user => {
+          if(user._id === data.winner._id){
+            user.lineNumber = 0
+            user.victories++
+          } else if(user._id === data.loser._id){
+            user.lineNumber = usersWithOldDatas.length-1
+            user.loses++
+          } else {
+            user.lineNumber--
+          }
+        })
+
+        usersWithNewDatas.forEach(async (user) => {
+          await UserController.updateUser(user)
+        });
+
+        io.to(userCredentials.hall).emit("getUsers", usersWithNewDatas);
+        io.to(userCredentials.hall).emit("fight-status","start-fight")
+      })
     
       socket.on('disconnect', async () => {
         console.log('Um cliente se desconectou.');
