@@ -1,7 +1,8 @@
 const express = require('express');
 const socketIO = require('socket.io');
 const UserController = require('../controller/UserController');
-const ReportModel = require('../Utils/ReportModel')
+const ReportModel = require('../Utils/ReportModel');
+const CardModel = require('../Utils/CardModel');
 
 const app = express();
 
@@ -16,6 +17,12 @@ module.exports = function SocketConnectionStart(){
       let userCredentials;
 
       let usersInThisHall;
+
+      let userCards = [
+        new CardModel("attack",1,1),
+        new CardModel("defense",Infinity,1),
+        new CardModel("recharging",Infinity,1),
+      ];
 
       console.log('Um cliente se conectou.');
 
@@ -60,6 +67,10 @@ module.exports = function SocketConnectionStart(){
         }
 
         io.to(userCredentials.hall).emit("getUsers", usersInThisHall);
+      })
+
+      socket.on("get-fighter-cards",()=>{
+        io.to(userCredentials.hall).emit("get-fighter-cards", {userCredentials, userCards});
       })
 
       socket.on("report", (report) => {
