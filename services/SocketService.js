@@ -17,14 +17,27 @@ module.exports = function SocketConnectionStart(){
       let userCredentials;
 
       let usersInThisHall;
-
-      let userCards = [
-        new CardModel("attack",1,1),
-        new CardModel("defense",Infinity,1),
-        new CardModel("recharging",Infinity,1),
-      ];
-
+      
       let lastMovementUsed
+      
+      let userCards
+
+      function setUserCardsAsDefault(){
+        //Usuário não obtém cartas de tipo 2 e 3 como padrão inicial
+        userCards = [
+          new CardModel("attack",0,3),
+          new CardModel("attack",0,2),
+          new CardModel("attack",1,1),
+          new CardModel("defense",0,3),
+          new CardModel("defense",0,2),
+          new CardModel("defense",Infinity,1),
+          new CardModel("recharging",0,3),
+          new CardModel("recharging",0,2),
+          new CardModel("recharging",Infinity,1),
+        ];
+      }
+
+      setUserCardsAsDefault()
 
       console.log('Um cliente se conectou.');
 
@@ -118,11 +131,7 @@ module.exports = function SocketConnectionStart(){
 
       //As cartas do usuário voltam à configuração inicial
       socket.on("reset-my-cards", ()=>{
-        userCards = [
-          new CardModel("attack",1,1),
-          new CardModel("defense",Infinity,1),
-          new CardModel("recharging",Infinity,1),
-        ];
+        setUserCardsAsDefault()
       })
 
       socket.on("start-new-fight", async (data)=>{
