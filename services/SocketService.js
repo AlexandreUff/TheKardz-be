@@ -116,6 +116,15 @@ module.exports = function SocketConnectionStart(){
         await UserController.updateUser(userData)
       })
 
+      //As cartas do usuário voltam à configuração inicial
+      socket.on("reset-my-cards", ()=>{
+        userCards = [
+          new CardModel("attack",1,1),
+          new CardModel("defense",Infinity,1),
+          new CardModel("recharging",Infinity,1),
+        ];
+      })
+
       socket.on("start-new-fight", async (data)=>{
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
         const usersWithOldDatas = [...response.data];
@@ -139,13 +148,6 @@ module.exports = function SocketConnectionStart(){
         usersWithNewDatas.forEach(async (user) => {
           await UserController.updateUser(user)
         });
-
-        //As cartas do usuário voltam à configuração inicial
-        userCards = [
-          new CardModel("attack",1,1),
-          new CardModel("defense",Infinity,1),
-          new CardModel("recharging",Infinity,1),
-        ];
 
         io.to(userCredentials.hall).emit("getUsers", usersWithNewDatas);
         io.to(userCredentials.hall).emit("fight-status","start-fight")
