@@ -24,6 +24,8 @@ module.exports = function SocketConnectionStart(){
         new CardModel("recharging",Infinity,1),
       ];
 
+      let lastMovementUsed
+
       console.log('Um cliente se conectou.');
 
       socket.on("credential", async (credential) => {
@@ -137,6 +139,13 @@ module.exports = function SocketConnectionStart(){
         usersWithNewDatas.forEach(async (user) => {
           await UserController.updateUser(user)
         });
+
+        //As cartas do usuário voltam à configuração inicial
+        userCards = [
+          new CardModel("attack",1,1),
+          new CardModel("defense",Infinity,1),
+          new CardModel("recharging",Infinity,1),
+        ];
 
         io.to(userCredentials.hall).emit("getUsers", usersWithNewDatas);
         io.to(userCredentials.hall).emit("fight-status","start-fight")
