@@ -70,11 +70,22 @@ module.exports = function SocketConnectionStart(){
       })
 
       socket.on("get-fighter-cards",()=>{
-        io.to(userCredentials.hall).emit("get-fighter-cards", {userCredentials, userCards});
+        console.log("CARDS DO USUÁRIO", userCards)
+
+        //O servidor só envia as cartas com quantidade (amount) maior que zero
+        const cardsWithAmountBiggerThanZero = userCards.filter(card => {
+          if(card.amount > 0){
+            return card
+          }
+        })
+
+        io.to(userCredentials.hall).emit("get-fighter-cards", {
+          userCredentials,
+          userCards: cardsWithAmountBiggerThanZero
+        });
       })
 
       socket.on("report", (report) => {
-        console.log("Reporta:", userCredentials.userId)
         socket.broadcast.to(userCredentials.hall).emit("report", report);
       })
 
@@ -83,12 +94,17 @@ module.exports = function SocketConnectionStart(){
         const thisPlayerById = await UserController.findUserById(userCredentials.userId)
 
         if(thisPlayerById.data.lineNumber === 0){
-          console.log(`${thisPlayerById.data.name} de idx ${thisPlayerById.data.lineNumber} na fila iniciou a luta.`)
           io.to(userCredentials.hall).emit("fight-status","start-round")
         }
       })
 
       socket.on("chosen-movement", (movimentData) => {
+        const movementFromClient = {...movimentData.movement}
+        const userCardIndex = userCards.findIndex(card => card.cardName === movementFromClient.cardName && 
+          card.type === movementFromClient.type)
+
+        userCards[userCardIndex].amount--
+
         console.log("Movimento que chegou", movimentData)
         socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
         /* io.to(userCredentials.hall).emit("fight-status","comparing-movements") */
