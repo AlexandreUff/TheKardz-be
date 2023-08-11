@@ -18,7 +18,10 @@ module.exports = function SocketConnectionStart(){
 
       let usersInThisHall;
       
-      let lastMovementUsed
+      let lastMovementUsed = {
+        name: "",
+        amount: 0
+      }
       
       let userCards
 
@@ -110,12 +113,47 @@ module.exports = function SocketConnectionStart(){
         }
       })
 
-      socket.on("chosen-movement", (movimentData) => {
-        const movementFromClient = {...movimentData.movement}
-        const userCardIndex = userCards.findIndex(card => card.cardName === movementFromClient.cardName && 
-          card.type === movementFromClient.type)
+      function userCardsDecrease(cardChosen){
+        const userCardIndex = userCards.findIndex(card => card.cardName === cardChosen.cardName && 
+          card.type === cardChosen.type)
 
         userCards[userCardIndex].amount--
+      }
+
+      function userCardsBonusHandler(cardChosen){
+        if(lastMovementUsed.name === cardChosen.cardName){
+
+          if(lastMovementUsed.amount === 1){
+            const cardToIncrementAmount = userCards.findIndex(card => card.cardName === lastMovementUsed.name &&
+              card.type === 2)
+
+            userCards[cardToIncrementAmount].amount++
+          }
+
+          if(lastMovementUsed.amount >= 2){
+            const cardToIncrementAmount = userCards.findIndex(card => card.cardName === lastMovementUsed.name &&
+              card.type === 3)
+
+            userCards[cardToIncrementAmount].amount++
+          }
+
+          lastMovementUsed.amount++
+        } else {
+          lastMovementUsed.name = cardChosen.cardName
+          lastMovementUsed.amount = 1
+        }
+      }
+
+      socket.on("chosen-movement", (movimentData) => {
+        const movementFromClient = {...movimentData.movement}
+        /* const userCardIndex = userCards.findIndex(card => card.cardName === movementFromClient.cardName && 
+          card.type === movementFromClient.type)
+
+        userCards[userCardIndex].amount-- */
+
+        userCardsDecrease(movementFromClient)
+
+        userCardsBonusHandler(movementFromClient)
 
         socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
         /* io.to(userCredentials.hall).emit("fight-status","comparing-movements") */
