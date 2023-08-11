@@ -197,6 +197,17 @@ module.exports = function SocketConnectionStart(){
       })
 
       socket.on("start-new-fight", async (data)=>{
+        io.to(userCredentials.hall).emit(
+          "report",
+          new ReportModel(
+            "game_server",
+            "log",
+            `${data.winner.name} venceu ${data.loser.name}.`,
+            false,
+            new Date()
+          )
+          );
+
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
         const usersWithOldDatas = [...response.data];
 
