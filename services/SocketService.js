@@ -184,9 +184,15 @@ module.exports = function SocketConnectionStart(){
         await UserController.updateUser(userData)
       })
 
-      //As cartas do usuário voltam à configuração inicial
+      //As cartas do usuário e seu último movimento usado voltam à configuração inicial
       socket.on("reset-my-cards", ()=>{
         console.log("Reiniciei", userCredentials.userName)
+
+        lastMovementUsed = {
+          name: "",
+          amount: 0
+        }
+
         setUserCardsAsDefault()
       })
 
