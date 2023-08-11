@@ -66,7 +66,6 @@ module.exports = function SocketConnectionStart(){
         /* io.to(userCredentials.hall).emit("getUsers", response); */
 
         if(io.sockets.adapter.rooms.get(userCredentials.hall).size === 2){
-            console.log("Inicia ciclo de partida!")
             io.to(userCredentials.hall).emit(
             "report",
             new ReportModel(
@@ -85,8 +84,6 @@ module.exports = function SocketConnectionStart(){
       })
 
       socket.on("get-fighter-cards",()=>{
-        console.log("CARDS DO USUÁRIO", userCards)
-
         //O servidor só envia as cartas com quantidade (amount) maior que zero
         const cardsWithAmountBiggerThanZero = userCards.filter(card => {
           if(card.amount > 0){
@@ -120,7 +117,6 @@ module.exports = function SocketConnectionStart(){
 
         userCards[userCardIndex].amount--
 
-        console.log("Movimento que chegou", movimentData)
         socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
         /* io.to(userCredentials.hall).emit("fight-status","comparing-movements") */
       })
@@ -131,6 +127,7 @@ module.exports = function SocketConnectionStart(){
 
       //As cartas do usuário voltam à configuração inicial
       socket.on("reset-my-cards", ()=>{
+        console.log("Reiniciei", userCredentials.userName)
         setUserCardsAsDefault()
       })
 
@@ -151,8 +148,6 @@ module.exports = function SocketConnectionStart(){
 
           return user
         })
-
-        console.log("NOVOS DADOS:",usersWithNewDatas)
 
         usersWithNewDatas.forEach(async (user) => {
           await UserController.updateUser(user)
@@ -212,7 +207,6 @@ module.exports = function SocketConnectionStart(){
 
         //Se era um player que estava jogando e se há mais de um jogador na sala, dá o start na próxima luta
         if(isAPlayerFighting && isThereMoreThanOne){
-          console.log("Foi")
           io.to(userCredentials.hall).emit("fight-status","start-fight")
         }
 
