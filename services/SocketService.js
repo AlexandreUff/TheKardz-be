@@ -144,6 +144,25 @@ module.exports = function SocketConnectionStart(){
         }
       }
 
+      //Caso o usuário use algum tipo de card de recarga
+      function rechargingHandler(cardChosen){
+        if(cardChosen.cardName === "recharging"){
+          switch (cardChosen.type){
+            case 1: 
+              userCards[2].amount++;
+              break;
+            case 2: 
+              userCards[2].amount = userCards[2].amount + 2;
+              break;
+            case 3: 
+              userCards[2].amount = userCards[2].amount + 3;
+              break;
+          }
+
+          //Obs: O índice 2 é o índice de carta de ataque do tipo 1
+        }
+      }
+
       socket.on("chosen-movement", (movimentData) => {
         const movementFromClient = {...movimentData.movement}
         /* const userCardIndex = userCards.findIndex(card => card.cardName === movementFromClient.cardName && 
@@ -154,6 +173,8 @@ module.exports = function SocketConnectionStart(){
         userCardsDecrease(movementFromClient)
 
         userCardsBonusHandler(movementFromClient)
+
+        rechargingHandler(movementFromClient)
 
         socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
         /* io.to(userCredentials.hall).emit("fight-status","comparing-movements") */
