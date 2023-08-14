@@ -156,12 +156,15 @@ module.exports = function SocketConnectionStart(){
       function rechargingHandler(cardChosen){
         if(cardChosen.cardName === "recharging"){
           switch (cardChosen.type){
+            //Caso seja recharging tipo 1, ele carrega uma carta de ataque
             case 1: 
               userCards[2].amount++;
               break;
+            //Caso seja recharging tipo 2, ele carrega duas cartas de ataque
             case 2: 
               userCards[2].amount = userCards[2].amount + 2;
               break;
+            //Caso seja recharging tipo 3, ele carrega três cartas de ataque
             case 3: 
               userCards[2].amount = userCards[2].amount + 3;
               break;
