@@ -120,25 +120,33 @@ module.exports = function SocketConnectionStart(){
         userCards[userCardIndex].amount--
       }
 
+      //Handler de cartas bonus
       function userCardsBonusHandler(cardChosen){
+        //Caso a carta jogada na partida anterior é igual a jogada agora
         if(lastMovementUsed.name === cardChosen.cardName){
 
+          //Caso tenha usado 1x
           if(lastMovementUsed.amount === 1){
             const cardToIncrementAmount = userCards.findIndex(card => card.cardName === lastMovementUsed.name &&
               card.type === 2)
 
-            userCards[cardToIncrementAmount].amount++
+              //O usuário só pode ter uma carta bônus de cada tipo
+              if(userCards[cardToIncrementAmount].amount === 0) userCards[cardToIncrementAmount].amount++
           }
 
+          //Caso tenha usado 2x
           if(lastMovementUsed.amount >= 2){
             const cardToIncrementAmount = userCards.findIndex(card => card.cardName === lastMovementUsed.name &&
               card.type === 3)
 
-            userCards[cardToIncrementAmount].amount++
+              //O usuário só pode ter uma carta bônus de cada tipo
+              if(userCards[cardToIncrementAmount].amount === 0) userCards[cardToIncrementAmount].amount++
           }
 
+          //Incrementa o número de vezes que a carta foi usada
           lastMovementUsed.amount++
         } else {
+          //Se a carta da partida anterior for diferente, ele atribui e põe o total de uso igual a 1
           lastMovementUsed.name = cardChosen.cardName
           lastMovementUsed.amount = 1
         }
