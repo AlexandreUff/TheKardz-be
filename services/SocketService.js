@@ -38,6 +38,11 @@ module.exports = function SocketConnectionStart(){
           new CardModel("recharging",0,2),
           new CardModel("recharging",Infinity,1),
         ];
+
+        lastMovementUsed = {
+          name: "",
+          amount: 0
+        };
       }
 
       setUserCardsAsDefault()
