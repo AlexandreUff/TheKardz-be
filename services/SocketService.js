@@ -245,7 +245,18 @@ module.exports = function SocketConnectionStart(){
           await UserController.updateUser(user)
         });
 
+        const nextFighter = usersWithNewDatas.find(user => {
+          return user.lineNumber === 1
+        })
+
         io.to(userCredentials.hall).emit("getUsers", usersWithNewDatas);
+        io.to(userCredentials.hall).emit("report", new ReportModel(
+          "game_server",
+          "log",
+          `${data.winner.name} vs ${nextFighter.name}.`,
+          false,
+          new Date()
+        ));
         io.to(userCredentials.hall).emit("fight-status","start-fight")
       })
     
