@@ -311,6 +311,8 @@ module.exports = function SocketConnectionStart(){
         //Se era um player que estava jogando e se há mais de um jogador na sala, dá o start na próxima luta
         if(isAPlayerFighting && isThereMoreThanOne){
           io.to(userCredentials.hall).emit("fight-status","start-fight")
+        } else if(isAPlayerFighting && !isThereMoreThanOne){
+          io.to(userCredentials.hall).emit("fight-status","stand-by")
         }
 
         if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
