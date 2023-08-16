@@ -3,6 +3,7 @@ const socketIO = require('socket.io');
 const UserController = require('../controller/UserController');
 const ReportModel = require('../Utils/ReportModel');
 const CardModel = require('../Utils/CardModel');
+const HallController = require('../controller/HallController');
 
 const app = express();
 
@@ -315,7 +316,11 @@ module.exports = function SocketConnectionStart(){
           io.to(userCredentials.hall).emit("fight-status","stand-by")
         }
 
-        if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size) console.log("LIMOU!")
+        //Caso não haja nenhum player na "room", o último a sair remove o documento...
+        //que representa a sala do banco de dados.
+        if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size){
+          await HallController.deleteHall(userCredentials.hall)
+        }
         
       });
     });
