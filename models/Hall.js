@@ -55,6 +55,14 @@ class Hall {
 
         return data
     }
+
+    static async deleteHall(hallNumber){
+        const data = await this.HallConnection.deleteOne(
+            {number: hallNumber},
+        )
+
+        return data
+    }
 }
 
 module.exports = Hall
