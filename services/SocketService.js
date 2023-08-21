@@ -253,9 +253,21 @@ module.exports = function SocketConnectionStart(){
           await UserController.updateUser(user)
         });
 
+        //Captura o próximo a jogar
         const nextFighter = usersWithNewDatas.find(user => {
           return user.lineNumber === 1
         })
+
+        //Captura o primeiro que está na fila de espera
+        const firstOfThoseWhoWait = usersWithNewDatas.find(user => {
+          return user.lineNumber === 2
+        })
+
+        //Só dispara as notificações se houver mais de 2 jogadores na partida
+        if(usersWithNewDatas.length > 2) {
+          io.to(userCredentials.hall).emit("notify-next-fight", nextFighter)
+          io.to(userCredentials.hall).emit("notify-player-is-waiting", firstOfThoseWhoWait)
+        }
 
         io.to(userCredentials.hall).emit("getUsers", usersWithNewDatas);
         io.to(userCredentials.hall).emit("report", new ReportModel(
