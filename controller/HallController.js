@@ -57,4 +57,34 @@ module.exports = class HallController {
             )
         }
     }
+
+    static async deleteHall(hallNumber){
+        let data
+
+        if(!hallNumber){
+            return new DataPayload(
+                false,
+                "O ID da sala não foi preenchido",
+                {}
+            )
+        } else {
+            const response = await Hall.deleteHall(hallNumber)
+            data = response
+        }
+
+        if(data){
+            return new DataPayload(
+                true,
+                "Sala excluída com sucesso.",
+                {}
+            )
+        } else {
+            return new DataPayload(
+                false,
+                "Sala não encontrada.",
+                {}
+            )
+        }
+
+    }
 }

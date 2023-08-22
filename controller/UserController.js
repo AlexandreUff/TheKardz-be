@@ -19,9 +19,15 @@ module.exports = class UserController {
     }
 
     static async findUserById(userId){
+        let response
+
         const data = await User.findUserById(userId)
 
-        const response = new DataPayload(true, "Usuário encontrado com sucesso", data)
+        if(data){
+            response = new DataPayload(true, "Usuário encontrado com sucesso", data)
+        } else {
+            response = new DataPayload(false, "Usuário não encontrado.", data)
+        }
 
         return response
     }
@@ -36,8 +42,13 @@ module.exports = class UserController {
 
     static async deleteUserById(userId){
         const data = await User.deleteUserById(userId)
+        let response
 
-        const response = new DataPayload(true, "Usuário removido com sucesso", data)
+        if(data){
+            response = new DataPayload(true, "Usuário removido com sucesso.", data)
+        } else {
+            response = new DataPayload(false, "Nenhum usuário foi encontrado.", data)
+        }
 
         return response
     }
