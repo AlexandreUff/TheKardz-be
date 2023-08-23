@@ -2,7 +2,6 @@ const express = require('express')
 const server = express()
 const SocketConnectionStart = require('./services/SocketService')
 const cors = require('cors')
-require('dotenv').config()
 
 const hallRoutes = require('./routes/hallRoutes')
 const userRoutes = require('./routes/userRoutes')
@@ -38,6 +37,5 @@ server.use((req, res, next) => {
 
 server.listen(3001, () => {
     console.log(`Servidor iniciado na porta 3001.`);
-    console.log(`ENV ${process.env.MY_VARIABLE}`)
     SocketConnectionStart();
   });
