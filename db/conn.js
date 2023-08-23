@@ -1,6 +1,12 @@
 const { MongoClient } = require('mongodb')
+require('dotenv').config()
 
-const uri = "mongodb://localhost:27017/thekardz"
+const DB_USER = process.env.DB_USER
+const DB_PASS = process.env.DB_PASS
+
+console.log("OS 2",DB_PASS,DB_USER)
+
+const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@cluster0.dnmojxv.mongodb.net/?retryWrites=true&w=majority`
 
 const client = new MongoClient(uri)
 
