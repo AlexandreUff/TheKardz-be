@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const http = require("http").createServer(app)
+const https = require("https").createServer(app)
 const socketIO = require('socket.io');
 const UserController = require('../controller/UserController');
 const ReportModel = require('../Utils/ReportModel');
@@ -18,7 +18,7 @@ module.exports = function SocketConnectionStart(){
     }
   }) */
 
-  const io = socketIO(server, {
+  const io = socketIO(https, {
     cors: {
       origin: "*"
     }
