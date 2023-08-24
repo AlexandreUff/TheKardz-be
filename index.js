@@ -9,7 +9,7 @@ const userRoutes = require('./routes/userRoutes')
 const gameRoutes = require('./routes/gameRoutes')
 
 server.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000' && process.env.URL_CLI_PROD);
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000' && `${process.env.URL_CLI_PROD}`);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     next();
