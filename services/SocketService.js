@@ -1,16 +1,23 @@
 const express = require('express');
+const app = express();
+const http = require("http").createServer(app)
 const socketIO = require('socket.io');
 const UserController = require('../controller/UserController');
 const ReportModel = require('../Utils/ReportModel');
 const CardModel = require('../Utils/CardModel');
 const HallController = require('../controller/HallController');
 
-const app = express();
 
 
 module.exports = function SocketConnectionStart(){
   const server = app.listen(3002);
 
+  socketIO(http, {
+    cors: {
+      origin: "*"
+    }
+  })
+  
   const io = socketIO(server);
 
   
