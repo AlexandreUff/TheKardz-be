@@ -11,7 +11,9 @@ const app = express();
 module.exports = function SocketConnectionStart(){
   const server = app.listen(3002);
 
-  const io = socketIO(server);
+  const io = socketIO(server, {
+    transports: ['websocket'] // Adicione esta linha para limitar aos WebSockets
+  });
 
   
   io.on('connection', (socket) => {
