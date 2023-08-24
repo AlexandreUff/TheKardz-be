@@ -12,13 +12,17 @@ const HallController = require('../controller/HallController');
 module.exports = function SocketConnectionStart(){
   const server = app.listen(3002);
 
-  socketIO(http, {
+  /* socketIO(http, {
     cors: {
       origin: "*"
     }
-  })
-  
-  const io = socketIO(server);
+  }) */
+
+  const io = socketIO(server, {
+    cors: {
+      origin: "*"
+    }
+  });
 
   
   io.on('connection', (socket) => {
