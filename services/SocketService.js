@@ -20,6 +20,7 @@ module.exports = function SocketConnectionStart(){
   }) */
 
   const io = new Server(http, {
+    path:"/tkc/",
     transports: ['websocket'],
     cors: {
       origin: "*"
