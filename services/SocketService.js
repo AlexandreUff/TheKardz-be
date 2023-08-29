@@ -20,9 +20,7 @@ module.exports = function SocketConnectionStart(){
   }) */
 
   const io = socketIO(server, {
-    cors: {
-      origin: "*"
-    }
+    transports: ['websocket']
   });
 
   
