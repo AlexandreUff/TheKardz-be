@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require("http").createServer(app)
-const socketIO = require('socket.io');
+const { Server } = require('socket.io');
 const UserController = require('../controller/UserController');
 const ReportModel = require('../Utils/ReportModel');
 const CardModel = require('../Utils/CardModel');
@@ -10,7 +10,7 @@ const HallController = require('../controller/HallController');
 
 
 module.exports = function SocketConnectionStart(){
-  const server = http.listen(3002); //Antes era app.listen(3002);
+  /* const server = http.listen(3002); */ //Antes era app.listen(3002);
   /* console.log("server",server) */
 
   /* socketIO(http, {
@@ -19,12 +19,14 @@ module.exports = function SocketConnectionStart(){
     }
   }) */
 
-  const io = socketIO(server, {
+  const io = new Server(http, {
     transports: ['websocket'],
     cors: {
       origin: "*"
     }
   });
+
+  io.listen(3002)
 
   
   io.on('connection', (socket) => {
