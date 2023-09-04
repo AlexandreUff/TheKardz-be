@@ -160,16 +160,16 @@ module.exports = function SocketConnectionStart(){
               card.type === 2)
 
               //O usuário só pode ter uma carta bônus de cada tipo
-              if(userCards[cardToIncrementAmount].amount === 0) userCards[cardToIncrementAmount].amount++
+              if(userCards[cardToIncrementAmount].amount === 0) userCards[cardToIncrementAmount].amount = 1
           }
 
           //Caso tenha usado 2x
-          if(lastMovementUsed.amount >= 2){
+          if(lastMovementUsed.amount === 2){
             const cardToIncrementAmount = userCards.findIndex(card => card.cardName === lastMovementUsed.name &&
               card.type === 3)
 
               //O usuário só pode ter uma carta bônus de cada tipo
-              if(userCards[cardToIncrementAmount].amount === 0) userCards[cardToIncrementAmount].amount++
+              if(userCards[cardToIncrementAmount].amount === 0) userCards[cardToIncrementAmount].amount = 1
           }
 
           //Incrementa o número de vezes que a carta foi usada
