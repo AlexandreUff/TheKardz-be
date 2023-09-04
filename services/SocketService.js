@@ -68,8 +68,7 @@ module.exports = function SocketConnectionStart(){
 
         userCredentials = credential
 
-        console.log("Credenciais de entrada:",userCredentials)
-
+        /* Trecho abaixo que talvez possa ser removido */
         if(!userCredentials.userId) socket.emit("redirect-nonexistent-user")
 
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
