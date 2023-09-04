@@ -64,23 +64,21 @@ module.exports = function SocketConnectionStart(){
 
       setUserCardsAsDefault()
 
-      console.log('Um cliente se conectou.');
-
       socket.on("credential", async (credential) => {
 
         userCredentials = credential
 
         console.log("Credenciais de entrada:",userCredentials)
 
+        if(!userCredentials.userId) socket.emit("redirect-nonexistent-user")
+
         const response = await UserController.getAllUsersInSuchHall(userCredentials.hall)
         
         usersInThisHall = [...response.data];
         
         if(!usersInThisHall.find(user => user._id.toString() === userCredentials.userId)){
-          console.log("USUÁRIO INEXISTENTE")
           socket.emit("redirect-nonexistent-user")
         } else {
-          console.log("EXISTE!")
 
           socket.join(userCredentials.hall)
 
@@ -226,7 +224,6 @@ module.exports = function SocketConnectionStart(){
 
       //As cartas do usuário e seu último movimento usado voltam à configuração inicial
       socket.on("reset-my-cards", ()=>{
-        console.log("Reiniciei", userCredentials.userName)
 
         lastMovementUsed = {
           name: "",
@@ -297,70 +294,68 @@ module.exports = function SocketConnectionStart(){
       })
     
       socket.on('disconnect', async () => {
-        console.log('Um cliente se desconectou.');
-        console.log("Credenciais de saída:",userCredentials)
-        const thisPlayerById = await UserController.findUserById(userCredentials.userId)
-        console.log("ESTE PLAYER", thisPlayerById)
-        console.log("CREDENCIAIS", userCredentials)
+        if(userCredentials?.userId){
+        
+          const thisPlayerById = await UserController.findUserById(userCredentials.userId)
 
-        if(thisPlayerById.data){
-          await UserController.deleteUserById(userCredentials.userId)
+          if(thisPlayerById.data){
+            await UserController.deleteUserById(userCredentials.userId)
 
-          //Caso seja um player que estava jogando no momento
-          const isAPlayerFighting = thisPlayerById.data.lineNumber === 0 || thisPlayerById.data.lineNumber === 1
+            //Caso seja um player que estava jogando no momento
+            const isAPlayerFighting = thisPlayerById.data.lineNumber === 0 || thisPlayerById.data.lineNumber === 1
 
-          if(isAPlayerFighting){
-            socket.broadcast.to(userCredentials.hall).emit("fight-status","end-fight")
-          }
-
-          const allUsers = await UserController.getAllUsersInSuchHall(userCredentials.hall)
-
-          const usersWithNewLineNumber = allUsers.data.map(user => {
-            if(user.lineNumber > thisPlayerById.data.lineNumber){
-              user.lineNumber--
-              return user
-            } else {
-              return user
+            if(isAPlayerFighting){
+              socket.broadcast.to(userCredentials.hall).emit("fight-status","end-fight")
             }
-          })
 
-          /* Mande usersWithNewLineNumber a todos, mas só salve no banco os modificados*/
-          usersWithNewLineNumber.forEach(async (user) => {
-            if(user.lineNumber >= thisPlayerById.data.lineNumber){
-              await UserController.updateUser(user)
+            const allUsers = await UserController.getAllUsersInSuchHall(userCredentials.hall)
+
+            const usersWithNewLineNumber = allUsers.data.map(user => {
+              if(user.lineNumber > thisPlayerById.data.lineNumber){
+                user.lineNumber--
+                return user
+              } else {
+                return user
+              }
+            })
+
+            /* Mande usersWithNewLineNumber a todos, mas só salve no banco os modificados*/
+            usersWithNewLineNumber.forEach(async (user) => {
+              if(user.lineNumber >= thisPlayerById.data.lineNumber){
+                await UserController.updateUser(user)
+              }
+            });
+
+            socket.broadcast.to(userCredentials.hall).emit(
+              "report",
+              new ReportModel(
+                "game_server",
+                "log",
+                `${userCredentials.userName} se desconectou.`,
+                false,
+                new Date()
+              )
+              );
+              
+            io.to(userCredentials.hall).emit("getUsers", usersWithNewLineNumber);
+            socket.leave(userCredentials.hall)
+
+            const isThereMoreThanOne = io.sockets.adapter.rooms.get(userCredentials.hall)?.size > 1
+
+            //Se era um player que estava jogando e se há mais de um jogador na sala, dá o start na próxima luta
+            if(isAPlayerFighting && isThereMoreThanOne){
+              io.to(userCredentials.hall).emit("fight-status","start-fight")
+            } else if(isAPlayerFighting && !isThereMoreThanOne){
+              io.to(userCredentials.hall).emit("fight-status","stand-by")
             }
-          });
 
-          socket.broadcast.to(userCredentials.hall).emit(
-            "report",
-            new ReportModel(
-              "game_server",
-              "log",
-              `${userCredentials.userName} se desconectou.`,
-              false,
-              new Date()
-            )
-            );
-            
-          io.to(userCredentials.hall).emit("getUsers", usersWithNewLineNumber);
-          socket.leave(userCredentials.hall)
-
-          const isThereMoreThanOne = io.sockets.adapter.rooms.get(userCredentials.hall)?.size > 1
-
-          //Se era um player que estava jogando e se há mais de um jogador na sala, dá o start na próxima luta
-          if(isAPlayerFighting && isThereMoreThanOne){
-            io.to(userCredentials.hall).emit("fight-status","start-fight")
-          } else if(isAPlayerFighting && !isThereMoreThanOne){
-            io.to(userCredentials.hall).emit("fight-status","stand-by")
-          }
-
-          //Caso não haja nenhum player na "room", o último a sair remove o documento...
-          //que representa a sala do banco de dados.
-          if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size){
-            await HallController.deleteHall(userCredentials.hall)
+            //Caso não haja nenhum player na "room", o último a sair remove o documento...
+            //que representa a sala do banco de dados.
+            if(!io.sockets.adapter.rooms.get(userCredentials.hall)?.size){
+              await HallController.deleteHall(userCredentials.hall)
+            }
           }
         }
-
       });
     });
 }
