@@ -10,15 +10,6 @@ const HallController = require('../controller/HallController');
 
 
 module.exports = function SocketConnectionStart(){
-  /* const server = http.listen(3002); */ //Antes era app.listen(3002);
-  /* console.log("server",server) */
-
-  /* socketIO(http, {
-    cors: {
-      origin: "*"
-    }
-  }) */
-
   const io = new Server(http, {
     path:"/tkc/",
     transports: ['websocket'],
@@ -91,7 +82,6 @@ module.exports = function SocketConnectionStart(){
               new Date()
             )
             );
-          /* io.to(userCredentials.hall).emit("getUsers", response); */
 
           if(io.sockets.adapter.rooms.get(userCredentials.hall).size === 2){
               io.to(userCredentials.hall).emit(
@@ -131,7 +121,6 @@ module.exports = function SocketConnectionStart(){
       })
 
       socket.on("starting-round", async () => {
-        /* VER SE O BROADCAST TALVEZ NÃO SEJA MAIS INTERESSANTE PRA EVITAR DUPLICAÇÃO*/
         const thisPlayerById = await UserController.findUserById(userCredentials.userId)
 
         if(thisPlayerById.data.lineNumber === 0){
@@ -202,10 +191,6 @@ module.exports = function SocketConnectionStart(){
 
       socket.on("chosen-movement", (movimentData) => {
         const movementFromClient = {...movimentData.movement}
-        /* const userCardIndex = userCards.findIndex(card => card.cardName === movementFromClient.cardName && 
-          card.type === movementFromClient.type)
-
-        userCards[userCardIndex].amount-- */
 
         userCardsDecrease(movementFromClient)
 
@@ -214,7 +199,6 @@ module.exports = function SocketConnectionStart(){
         rechargingHandler(movementFromClient)
 
         socket.broadcast.to(userCredentials.hall).emit("chosen-movement",movimentData)
-        /* io.to(userCredentials.hall).emit("fight-status","comparing-movements") */
       })
 
       socket.on("user-save-data", async (userData) => {
